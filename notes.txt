@@ -1,0 +1,37 @@
+Create a new Database:
+   sqlite3 mynewdatabase.db
+   Add columns/primary key?
+   This is taking much longer than expected
+
+SQL Injection:
+INSERT INTO scores ("winner_name", "player", "score") VALUES ('Rich Pearson', 'Player 1', 10);
+
+DB is now set-up, need to add the AJAX on the condition of the win.
+
+Now I need to 'Flask' All this!
+
+Had a few issues with getting the JS and Audio files to work in Flask. Turns out I needed to do the following:
+1. Move the js, css. static files/folders into a folder called static.
+2. Then add this to app.py:
+
+app = Flask(__name__, '/static')
+
+3. In the index.html, amend all the scr links to the following:
+
+JS:
+<script src="../static/stars.js"></script>
+
+Audio:
+Audio('/static/audio/title.mp3');
+
+And now we're working as before
+
+Next, add the AJAX
+
+This was a great read; https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/
+
+Ok, done a whole load more now. Added a DB, added all sorts of things like player names etc. ALl very good stuff.
+
+Just need to tidy up and debug I think, and I think it's good to go.
+
+Also need to sort the bugs!!
