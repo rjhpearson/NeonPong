@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<html lang="en">
+    <head>
+        <title>Neon Pong</title>
+        <style>
+
+            body {
+                background: black;
+            }
+
+            input:focus,
+            textarea:focus,
+            select:focus {
+                outline: none;
+            }
+
+            #scores {
+            font: 20px sans-serif;
+            border-collapse: collapse;
+            width: 1000px;
+            color: white;
+            background: linear-gradient(270deg, rgba(0,0,0,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)
+            }
+
+            #scores td, #scores th {
+            border: 1px solid #white;
+            padding: 8px;
+            }
+
+            #scores tr:nth-child(even){background-color: #090979;}
+
+            #scores tr:hover {background-color: #01009a;}
+
+            #scores th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            color: white;
+            }
+
+        </style>
+    </head>
+    <body>
+    <div style ="margin: auto; width: 1000px; height: 400px; margin-top: 50px;">
+        <div style="text-align: center; float: left; background: linear-gradient(270deg, rgba(0,0,0,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); width: 200px; height: 400px; margin-left: auto; margin-right: auto;">
+        <p style="font: 20px sans-serif; color: white">Player 1 Name:</p>
+            <input id="player1Name" placeholder="Enter Name" style="text-align: center; border: 0; height: 25px; width: 150px; font: 20px sans-serif;"></input>
+        </div>
+        <div style="float: left; background-color: black; width: 600px; height: 400px; margin-left: auto; margin-right: auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="background-color: black; width: 600px; height: 400px;">
+
+                <!-- Start Screen -->
+
+                <rect visibility="visible" id="btn_musicbg" style="cursor: pointer" x="17" y="14" width="28px" height="24px" rx="5px" />
+                <path visibility="visible" id="btn_music" d="M 32.229 14 a 0.9 0.9 0 0 0 -0.569 0.232 l -7.6 6.32 a 1.158 1.158 0 0 1 -0.955 0.328 H 18.208 A 1.2 1.2 0 0 0 17 22.088 v 7.826 A 1.2 1.2 0 0 0 18.208 31.12 H 23.1 a 1.158 1.158 0 0 1 0.955 0.328 l 7.6 6.32 c 0.521 0.433 1.081 0.224 1.081 -0.289 V 14.522 A 0.494 0.494 0 0 0 32.229 14 Z" style="fill: rgba(0,0,255,1)"/>
+                <text visibility="visible" id="bg_txt1" style="text-shadow:
+                0 0 7px #44f,
+                0 0 10px #44f,
+                0 0 21px #44f,
+                0 0 42px #44f,
+                0 0 82px #44f,
+                0 0 92px #44f,
+                0 0 102px #44f,
+                0 0 151px #44f; font: 80px 'Brush Script MT'; fill: white" x="165" y="115" id="small">Neon Pong</text>
+                <text visibility="visible" id="bg_txt2" style="font: 20px sans-serif; fill: white" x="75" y="210" id="small">Player 1 Controls</text>
+                <text visibility="visible" id="bg_txt3" style="font: 20px sans-serif; fill: white" x="75" y="240" id="small">Move Up: "W"</text>
+                <text visibility="visible" id="bg_txt4" style="font: 20px sans-serif; fill: white" x="75" y="270" id="small">Move Down: "S"</text>
+                <text visibility="visible" id="bg_txt5" style="font: 20px sans-serif; fill: white" x="325" y="210" id="small">Player 2 Controls</text>
+                <text visibility="visible" id="bg_txt6" style="font: 20px sans-serif; fill: white" x="325" y="240" id="small">Move UP: "Up Arrow"</text>
+                <text visibility="visible" id="bg_txt7" style="font: 20px sans-serif; fill: white" x="325" y="270" id="small">Move Down: "Down Arrow"</text>
+                <rect visibility="hidden" id="btn_start" style="fill: rgba(0,0,255,1); cursor: pointer" x="260" y="320" width="80px" height="50px" rx="5px" />
+                <text visibility="hidden" id="btn_starttxt1" style="font: 20px sans-serif; fill: white; cursor: pointer" x="279" y="341" id="small" width="100" height="20">Start</text>
+                <text visibility="hidden" id="btn_starttxt2" style="font: 20px sans-serif; fill: white; cursor: pointer" x="273" y="363" id="small">Game</text>
+
+                <!-- Player1, Player2, Ball and Court-->
+                <path visibility="hidden" id="courtouter" style="filter: drop-shadow(0px 0px 7px #00F) drop-shadow(0px 0px 10px #CCF)" stroke="#FFF" stroke-width="3" fill="none" d="M 38.5,30
+                L560,30
+                L560,370
+                L40,370
+                L40,30
+                M300,30
+                L300,370
+                M300,101z" />
+                <circle visibility="hidden" id="courtinner" cx="300" cy="200" r="100" stroke="#FFF" fill="none" stroke-width="3" style="filter: drop-shadow(0px 0px 7px #00F) drop-shadow(0px 0px 10px #CCF)" />
+                <text visibility="hidden" id="player1score" style="font: 40px sans-serif; fill: white; filter: drop-shadow(0px 0px 7px #00F) drop-shadow(0px 0px 10px #CCF)" x="139" y="80" id="small">0</text>
+                <text visibility="hidden" id="player2score" style="font: 40px sans-serif; fill: white; filter: drop-shadow(0px 0px 7px #00F) drop-shadow(0px 0px 10px #CCF)" x="439" y="80" id="small">0</text>
+                <rect visibility="hidden" id="player1" style="fill: white; filter: drop-shadow(0px 0px 20px #FF0) drop-shadow(0px 0px 30px #CCF)" x="20" y="170" width="10px" height="60px" />
+                <rect visibility="hidden" id="player2" style="fill: white; filter: drop-shadow(0px 0px 20px #FF0) drop-shadow(0px 0px 30px #CCF)" x="570" y="170" width="10px" height="60px" />
+                <rect visibility="hidden" id="ball" style="fill: white; filter: drop-shadow(0px 0px 7px #FFF) drop-shadow(0px 0px 10px #FFF)" x="290" y="190" width="20px" height="20px" />
+
+                <!-- Stars -->
+                <path visibility="hidden" id="star1" style="fill: yellow; filter: drop-shadow(0px 0px 7px yellow)" d="">
+                    <animateMotion id="star1animatemotion" dur="0.5s" repeatCount="once" path="M 10,200 Q 35,180 90,170" />
+				    <animateTransform id="star1animatetransform" attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="0.75s" repeatCount="indefinite" />
+                </path>
+                <path visibility="hidden" id="star2" style="fill: yellow; filter: drop-shadow(0px 0px 7px yellow)" d="">
+                    <animateMotion id="star2animatemotion" dur="0.5s" repeatCount="once" path="M 10,200 Q 35,180 90,170" />
+				    <animateTransform id="star1animatetransform" attributeName="transform" attributeType="XML" type="rotate" from="0" to="180" dur="0.75s" repeatCount="indefinite" />
+                </path>
+                <path visibility="hidden" id="star3" style="fill: yellow; filter: drop-shadow(0px 0px 7px yellow)" d="">
+                    <animateMotion id="star3animatemotion" dur="0.5s" repeatCount="once" path="M 10,200 Q 35,180 90,170" />
+				    <animateTransform id="star1animatetransform" attributeName="transform" attributeType="XML" type="rotate" from="0" to="0" dur="0.75s" repeatCount="indefinite" />
+                </path>
+
+                <!-- Game Over Screen -->
+                <!-- <rect visibility="hidden" id="BGfilter" style="fill: rgba(255,255,255,0.3);" x="0" y="0" width="600px" height="400px"/> -->
+                <rect visibility="hidden" id="btn_title" style="fill: rgba(0,0,255,1); cursor: pointer" x="200" y="170" width="80px" height="50px" rx="5px" />
+                <text visibility="hidden" id="btn_titletxt1" style="font: 20px sans-serif; fill: white; cursor: pointer" x="207" y="192" id="small" width="100" height="20">Back to</text>
+                <text visibility="hidden" id="btn_titletxt2" style="font: 20px sans-serif; fill: white; cursor: pointer" x="222" y="213" id="small" width="100" height="20">Title</text>
+                <rect visibility="hidden" id="btn_restart" style="fill: rgba(0,0,255,1); cursor: pointer" x="320" y="170" width="80px" height="50px" rx="5px" />
+                <text visibility="hidden" id="btn_restarttxt1" style="font: 20px sans-serif; fill: white; cursor: pointer" x="342" y="192" id="small" width="100" height="20">New</text>
+                <text visibility="hidden" id="btn_restarttxt2" style="font: 20px sans-serif; fill: white; cursor: pointer" x="333" y="213" id="small">Game</text>
+
+                <!-- Debug Line for Stars -->
+                <path visibility="hidden" id="line" d="M570 200 L470 180" fill="none" stroke="green" />
+
+            </svg>
+        </div>
+        <div style="text-align: center; float: left; background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); width: 200px; height: 400px; margin-left: auto; margin-right: auto;">
+            <p style="font: 20px sans-serif; color: white">Player 2 Name:</p>
+                <input id="player2Name" placeholder="Enter Name" style="text-align: center; border: 0; height: 25px; width: 150px; font: 20px sans-serif;"></input>
+            </div>
+        </div>
+        <br>
+        <div>
+            <!-- Loop through the database entries to display them in this table -->
+            <table align="center" id="scores" >
+                <tr>
+                    <th>ID</th>
+                    <th>Winner Name</th>
+                    <th>Player</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+                {% for score in scores %}
+                <tr>
+                    <td>{{ score["score_id"] }}</td>
+                    <td>{{ score["winner_name"] }}</td>
+                    <td>{{ score["player"] }}</td>
+                    <td>{{ score["score"] }}</td>
+                    <td>{{ score["datetime"] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="../static/stars.js"></script>
+        <!-- <script src="stars.js"></script> -->
+        <script>
+
+        // Set Ball Horizontal Direction
+        var ballHorizontalDirection = "left";
+        if (Math.random() >= 0.5) {
+            ballHorizontalDirection = "left" } else {
+            ballHorizontalDirection = "right"}
+
+        // Set Ball Vertical Direction
+        var ballVerticalDirection = "up";
+        if (Math.random() >= 0.5) {
+            ballVerticalDirection = "up" } else {
+            ballVerticalDirection = "down"}
+
+        // Initialise variables
+        var ball;
+        var player1;
+        var player2;
+        var player1score = 0;
+        var player2score = 0;
+        var winner;
+        var winnerName;
+        var game_startspeed = 3;
+        var game_speed = 3;
+        var stop_game;
+        var final_score = 3;
+        var audio;
+        var music;
+        var musicplaying = false;
+
+        // Get Player Score Attributes
+        var player1scoreelement = document.getElementById("player1score").childNodes[0];
+        var player2scoreelement = document.getElementById("player2score").childNodes[0];
+
+        // Start music
+        function play_music() {
+            music = new Audio('/static/audio/title.mp3');
+            music.loop = true;
+            music.play();
+        }
+
+        function stop_music() {
+            music.pause();
+            music.currentTime = 0;
+        }
+
+        // Music Controller
+        var btn_music = document.getElementById("btn_music");
+        var btn_musicbg = document.getElementById("btn_musicbg");
+        btn_music.addEventListener('mouseover', (event) => {btn_music.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_music.addEventListener('mouseout', (event) =>  {btn_music.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_music.addEventListener('click', (event) => {start_stop_music()});
+
+        btn_musicbg.addEventListener('mouseover', (event) => {btn_music.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_musicbg.addEventListener('mouseout', (event) =>  {btn_music.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_musicbg.addEventListener('click', (event) => {start_stop_music()});
+
+        function start_stop_music() {
+            if (musicplaying == true) {
+                stop_music(); musicplaying = false;
+                btn_music.setAttribute("d", "M 32.229 14 a 0.9 0.9 0 0 0 -0.569 0.232 l -7.6 6.32 a 1.158 1.158 0 0 1 -0.955 0.328 H 18.208 A 1.2 1.2 0 0 0 17 22.088 v 7.826 A 1.2 1.2 0 0 0 18.208 31.12 H 23.1 a 1.158 1.158 0 0 1 0.955 0.328 l 7.6 6.32 c 0.521 0.433 1.081 0.224 1.081 -0.289 V 14.522 A 0.494 0.494 0 0 0 32.229 14 Z");
+            } else {
+                play_music(); musicplaying = true;
+                btn_music.setAttribute("d", "M 32.229 14 a 0.9 0.9 0 0 0 -0.569 0.232 l -7.6 6.32 a 1.158 1.158 0 0 1 -0.955 0.328 H 18.208 A 1.2 1.2 0 0 0 17 22.088 v 7.826 A 1.2 1.2 0 0 0 18.208 31.12 H 23.1 a 1.158 1.158 0 0 1 0.955 0.328 l 7.6 6.32 c 0.521 0.433 1.081 0.224 1.081 -0.289 V 14.522 A 0.494 0.494 0 0 0 32.229 14 Z M 42 16.3 L 40.209 18.093 a 14.708 14.708 0 0 1 0 15.844 l 1.785 1.776 A 17.19 17.19 0 0 0 42 16.3 Z m -4.333 4.323 L 35.905 22.4 a 6.035 6.035 0 0 1 0 7.237 l 1.756 1.756 a 8.554 8.554 0 0 0 0.01 -10.769 Z");
+            }
+        }
+
+        // Set-up Start Screen
+        var btn_start = document.getElementById("btn_start");
+        var btn_starttxt1 = document.getElementById("btn_starttxt1");
+        var btn_starttxt2 = document.getElementById("btn_starttxt2");
+        var input_player1 = document.getElementById("player1Name");
+        var input_player2 = document.getElementById("player2Name");
+
+        // Buttons
+        // When Start Button Pressed: Start Game
+
+        btn_start.addEventListener('mouseover', (event) => {btn_start.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_start.addEventListener('mouseout', (event) =>  {btn_start.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_start.addEventListener('click', (event) => {startGame();});
+        btn_starttxt1.addEventListener('mouseover', (event) => {btn_start.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_starttxt1.addEventListener('mouseout', (event) =>  {btn_start.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_starttxt1.addEventListener('click', (event) => {startGame();});
+        btn_starttxt2.addEventListener('mouseover', (event) => {btn_start.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_starttxt2.addEventListener('mouseout', (event) =>  {btn_start.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_starttxt2.addEventListener('click', (event) => {startGame();});
+
+        // When Return to Title Pressed: Return to Title
+        btn_title.addEventListener('mouseover', (event) => {btn_title.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_title.addEventListener('mouseout', (event) =>  {btn_title.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_title.addEventListener('click', (event) => {returnToTitle();});
+        btn_titletxt1.addEventListener('mouseover', (event) => {btn_title.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_titletxt1.addEventListener('mouseout', (event) =>  {btn_title.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_titletxt1.addEventListener('click', (event) => {returnToTitle();});
+        btn_titletxt2.addEventListener('mouseover', (event) => {btn_title.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_titletxt2.addEventListener('mouseout', (event) =>  {btn_title.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_titletxt2.addEventListener('click', (event) => {returnToTitle();});
+
+        // When Reset Game Pressed: Reset Game
+        btn_restart.addEventListener('mouseover', (event) => {btn_restart.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_restart.addEventListener('mouseout', (event) =>  {btn_restart.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_restart.addEventListener('click', (event) => {startGame();});
+        btn_restarttxt1.addEventListener('mouseover', (event) => {btn_restart.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_restarttxt1.addEventListener('mouseout', (event) =>  {btn_restart.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_restarttxt1.addEventListener('click', (event) => {startGame();});
+        btn_restarttxt2.addEventListener('mouseover', (event) => {btn_restart.style = "fill: rgba(0,0,255,0.7); cursor: pointer"});
+        btn_restarttxt2.addEventListener('mouseout', (event) =>  {btn_restart.style = "fill: rgba(0,0,255,1); cursor: pointer"});
+        btn_restarttxt2.addEventListener('click', (event) => {startGame();});
+
+        // Start Game
+        function startGame() {
+            input_player1.disabled = true;
+            input_player2.disabled = true;
+            if (musicplaying == true) {
+                stop_music(); musicplaying = false;}
+            resetRound();
+
+            // Reset Variables
+            player1score = 0;
+            player2score = 0;
+            game_startspeed = 3;
+            game_speed = 3;
+            player1scoreelement.nodeValue = player1score;
+            player2scoreelement.nodeValue = player2score;
+
+            // Hide Game Over Screen/Filter
+            // document.getElementById("BGfilter").setAttribute('visibility', "hidden");
+            document.getElementById("btn_title").setAttribute('visibility', "hidden");
+            document.getElementById("btn_titletxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_titletxt2").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restart").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restarttxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restarttxt2").setAttribute('visibility', "hidden");
+
+            // Hide Start Screen
+            document.getElementById("btn_start").setAttribute('visibility', "hidden");
+            document.getElementById("btn_starttxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_starttxt2").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt1").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt2").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt3").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt4").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt5").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt6").setAttribute('visibility', "hidden");
+            document.getElementById("bg_txt7").setAttribute('visibility', "hidden");
+            document.getElementById("btn_musicbg").setAttribute('visibility', "hidden");
+            document.getElementById("btn_music").setAttribute('visibility', "hidden");
+
+            // Display Game Objects
+
+            document.getElementById("ball").setAttribute('visibility', "visible");
+            document.getElementById("player1").setAttribute('visibility', "visible");
+            document.getElementById("player2").setAttribute('visibility', "visible");
+            document.getElementById("courtouter").setAttribute('visibility', "visible");
+            document.getElementById("courtinner").setAttribute('visibility', "visible");
+            document.getElementById("player1score").setAttribute('visibility', "visible");
+            document.getElementById("player2score").setAttribute('visibility', "visible");
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Game Over
+        function gameOver() {
+
+            // Show Game Over Screen/Filter
+            // document.getElementById("BGfilter").setAttribute('visibility', "visible");
+            document.getElementById("btn_title").setAttribute('visibility', "visible");
+            document.getElementById("btn_titletxt1").setAttribute('visibility', "visible");
+            document.getElementById("btn_titletxt2").setAttribute('visibility', "visible");
+            document.getElementById("btn_restart").setAttribute('visibility', "visible");
+            document.getElementById("btn_restarttxt1").setAttribute('visibility', "visible");
+            document.getElementById("btn_restarttxt2").setAttribute('visibility', "visible");
+
+            if (winner == "Player 1") {
+                winnerName = document.getElementById('player1Name').value
+            } else {
+                winnerName = document.getElementById('player2Name').value};
+
+            //AJAX to update the DB
+                $.ajax({
+                    url: '/process',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    winner: winnerName,
+                    player: winner,
+                    score: final_score
+                })
+            });
+        }
+
+        // Return to Title
+        function returnToTitle() {
+
+            input_player1.value = "";
+            input_player2.value = "";
+            input_player1.disabled = false;
+            input_player2.disabled = false;
+
+            // Hide Game Over Screen/Filter
+            // document.getElementById("BGfilter").setAttribute('visibility', "hidden");
+            document.getElementById("btn_title").setAttribute('visibility', "hidden");
+            document.getElementById("btn_titletxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_titletxt2").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restart").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restarttxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_restarttxt2").setAttribute('visibility', "hidden");
+
+            // Show Start Screen
+            document.getElementById("btn_start").setAttribute('visibility', "visible");
+            document.getElementById("btn_starttxt1").setAttribute('visibility', "visible");
+            document.getElementById("btn_starttxt2").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt1").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt2").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt3").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt4").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt5").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt6").setAttribute('visibility', "visible");
+            document.getElementById("bg_txt7").setAttribute('visibility', "visible");
+            document.getElementById("btn_musicbg").setAttribute('visibility', "visible");
+            document.getElementById("btn_music").setAttribute('visibility', "visible");
+
+            // Hide Game Objects
+            document.getElementById("ball").setAttribute('visibility', "hidden");
+            document.getElementById("player1").setAttribute('visibility', "hidden");
+            document.getElementById("player2").setAttribute('visibility', "hidden");
+            document.getElementById("courtouter").setAttribute('visibility', "hidden");
+            document.getElementById("courtinner").setAttribute('visibility', "hidden");
+            document.getElementById("player1score").setAttribute('visibility', "hidden");
+            document.getElementById("player2score").setAttribute('visibility', "hidden");
+
+            // Reset Variables
+            player1score = 0;
+            player2score = 0;
+            game_startspeed = 3;
+            game_speed = 3;
+            player1scoreelement.nodeValue = player1score;
+            player2scoreelement.nodeValue = player2score;
+
+        }
+
+        function resetRound() {
+            document.getElementById("ball").setAttribute('x', 300);
+            document.getElementById("ball").setAttribute('y', 200);
+            document.getElementById("player1").setAttribute('y', 170);
+            document.getElementById("player2").setAttribute('y', 170);
+            game_speed = game_startspeed;
+        }
+
+        function play_audio(clip) {
+            if(clip == 'paddle') {
+                audio = new Audio('/static/audio/paddle.mp3');
+            } else if (clip == 'wall') {
+                audio = new Audio('/static/audio/wall.mp3');
+            } else if (clip == 'score') {
+                audio = new Audio('/static/audio/score.mp3');
+            }
+            audio.loop = false;
+            audio.play();
+        }
+
+        function step(timestamp) {
+
+            // Get Ball's Position
+            ball = {
+                x: Number(document.getElementById("ball").getAttribute("x")),
+                y: Number(document.getElementById("ball").getAttribute("y")),
+                topleft: {
+                    x: Number(document.getElementById("ball").getAttribute("x")),
+                    y: Number(document.getElementById("ball").getAttribute("y"))
+                },
+                topright: {
+                    x: Number(document.getElementById("ball").getAttribute("x")) + 20,
+                    y: Number(document.getElementById("ball").getAttribute("y"))
+                },
+                bottomleft: {
+                    x: Number(document.getElementById("ball").getAttribute("x")),
+                    y: Number(document.getElementById("ball").getAttribute("y")) + 20
+                },
+                bottomright: {
+                    x: Number(document.getElementById("ball").getAttribute("x")) + 20,
+                    y: Number(document.getElementById("ball").getAttribute("y")) + 20
+                }
+            }
+
+            // Player 1 Position
+            player1 = {
+                x: Number(document.getElementById("player1").getAttribute("x")),
+                y: Number(document.getElementById("player1").getAttribute("y")),
+                top: {
+                    x: Number(document.getElementById("player1").getAttribute("x")) + 10,
+                    y: Number(document.getElementById("player1").getAttribute("y"))
+                },
+                bottom: {
+                    x: Number(document.getElementById("player1").getAttribute("x")) + 10,
+                    y: Number(document.getElementById("player1").getAttribute("y")) + 60
+                }
+            }
+
+            // Player 2 Position
+            player2 = {
+                x: Number(document.getElementById("player2").getAttribute("x")),
+                y: Number(document.getElementById("player2").getAttribute("y")),
+                top: {
+                    x: Number(document.getElementById("player2").getAttribute("x")),
+                    y: Number(document.getElementById("player2").getAttribute("y"))
+                },
+                bottom: {
+                    x: Number(document.getElementById("player2").getAttribute("x")),
+                    y: Number(document.getElementById("player2").getAttribute("y")) + 60
+                }
+            }
+
+            // Ball Horizontal Direction
+            if (ballHorizontalDirection == "left") {
+                if (ball.bottomleft.y >= player1.top.y && ball.topleft.y <= player1.bottom.y && ball.bottomleft.x <= player1.top.x) {
+                    ballHorizontalDirection = "right"
+                    play_audio("paddle");
+                    show_stars();
+                    game_speed += 0.2;
+                }
+                document.getElementById("ball").setAttribute("x", ball.x - game_speed);
+                if (ball.x <=0) {
+                    ballHorizontalDirection = "right";
+                    play_audio("score");
+                    player2score += 1;
+                    player2scoreelement.nodeValue = player2score;
+
+                    if (player2score == final_score)
+                    {
+                        winner = "Player 2";
+                        gameOver();
+                        cancelAnimationFrame(stopId);
+                    }
+                    resetRound();
+                }
+            }
+            else if (ballHorizontalDirection == "right") {
+                if (ball.bottomright.y >= player2.top.y && ball.topright.y <= player2.bottom.y && ball.bottomright.x >= player2.top.x) {
+                    ballHorizontalDirection = "left";
+                    play_audio("paddle");
+                    show_stars();
+                    game_speed += 0.2;
+                }
+                document.getElementById("ball").setAttribute("x", ball.x + game_speed);
+                if (ball.x > 580) {
+                    ballHorizontalDirection = "left";
+                    play_audio("score");
+                    player1score += 1;
+                    player1scoreelement.nodeValue = player1score;
+
+                    document.getElementById("player1score").setAttribute("innerHTML", player1score);
+                    if (player1score == final_score)
+                    {
+                        winner = "Player 1";
+                        gameOver();
+                        cancelAnimationFrame(stopId);
+                    }
+                    resetRound();
+                }
+            }
+
+            // Ball Vertical Direction
+            if (ballVerticalDirection == "up") {
+                if (ball.y < 10) {
+                    ballVerticalDirection = "down";
+                    play_audio("wall");
+                }
+                    document.getElementById("ball").setAttribute("y", ball.y - game_speed);
+                }
+            else if (ballVerticalDirection == "down") {
+                if (ball.y > 370) {
+                    ballVerticalDirection = "up";
+                    play_audio("wall");
+                }
+                    document.getElementById("ball").setAttribute("y", ball.y + game_speed);
+                }
+            stop_game = window.requestAnimationFrame(step);
+            move_line();
+        }
+
+        // Debug element for star's line
+        function move_line() {
+            var line = document.getElementById("line");
+            line.setAttribute("d", "M570, "+ (ball.y+10) +"  L470 "+ (ball.y + Math.floor(Math.random() * (40 - 20 + 1) + 20)));
+            // "M 30," + (ball.y+10) + " Q 70," + (ball.y+10) + " 90," + (ball.y));
+            // M30 200 L100 180
+            // "M 10,200 Q 35,180 90,170"
+        }
+
+        // Stops the UP and DOWN keys scrolling in the window
+        window.addEventListener("keydown", function(e) {
+        if(["ArrowUp","ArrowDown"].indexOf(e.code) > -1) {
+            e.preventDefault();
+            }
+        }, false);
+
+        // Event Listner for Player controls
+        document.addEventListener('keydown', function(event) {
+
+            // Player 1 Location
+            var player1y = document.getElementById("player1").getAttribute("y");
+
+            // Player 2 Location
+            var player2y = document.getElementById("player2").getAttribute("y");
+
+            // Move Player 1
+            if(event.keyCode == 87) {
+                if(player1y > 20) {
+                    document.getElementById("player1").setAttribute('y', + player1y - 20);
+                }
+            } else if(event.keyCode == 83) {
+                if(player1y < 320) {
+                    document.getElementById("player1").setAttribute('y', + player1y + 20);
+            }}
+
+            // Move Player 2
+            if(event.keyCode == 38) {
+                if(player2y > 20) {
+                    document.getElementById("player2").setAttribute('y', + player2y - 20);
+                }
+            } else if(event.keyCode == 40) {
+                if(player2y < 320) {
+                    document.getElementById("player2").setAttribute('y', + player2y + 20);
+            }}
+        });
+
+        // Event Listner for showing start game button
+        document.addEventListener('input', evt => {
+            var isblank1 = input_player1.value.trim()
+            var isblank2 = input_player2.value.trim()
+
+        if (isblank1 && isblank2) {
+            document.getElementById("btn_start").setAttribute('visibility', "visible");
+            document.getElementById("btn_starttxt1").setAttribute('visibility', "visible");
+            document.getElementById("btn_starttxt2").setAttribute('visibility', "visible");
+        } else {
+            document.getElementById("btn_start").setAttribute('visibility', "hidden");
+            document.getElementById("btn_starttxt1").setAttribute('visibility', "hidden");
+            document.getElementById("btn_starttxt2").setAttribute('visibility', "hidden");
+        }})
+
+        </script>
+    </body>
+</html>
